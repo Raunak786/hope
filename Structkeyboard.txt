@@ -1,0 +1,74 @@
+Stuck Keyboard
+
+You are given two strings typed and target. 
+You want to write target, but the keyboard is stuck so some characters may be written 1 or more times.
+Return whether it's possible that typed was meant to write target.
+
+Constraints
+
+n ≤ 100,000 where n is the length of typed
+m ≤ 100,000 where n is the length of s
+
+
+Solution:
+
+Intuition
+2 pointer + Greedy Approach
+We will introduce 2 pointers one pointing to string a and string b. Here a is the typed string and b is the target string. Then we will compare the length of 2 strings and do some calculation .We will return false if the length of a is less than b. Also we will return false when length of a and b are same but they are not equal. Then we will iterate through the two strings using the pointers and check if the characters corresponding to each iteration satisfies some conditions.
+
+Implementation
+We will introduce 2 random variables i, j and initialize it to 1. Then will compare the first characters from each string. If they are unequal we will return false .
+Else we will iterate through string a and string b.
+If a[i] and b[j] are equal then we will increment both i and j.
+If they are unequal but a[i] is equal to b[j-1] it means that a[i] is mistakenly typed(due to keyboard)so we increment i (to reach the case when finally a[i] is equal to b[j]).
+If a[i]!=b[j] and a[i]!=b[j-1], it means that that a[i] is a different character and it is also not present in b[0...j] which means typed can never become target. So we return false.
+
+After end of loop, there are 2 other things we have to deal with:
+-Loop breaks when i is a.length()
+Then we know there are j's which are still unprocessed i.e they have not been iterated through.
+So,we check if (i == a.length() && j != b.length()) then return false.
+
+-Loop breaks when j==b.length()
+Then there are some i's which are still unprocessed but we know that we have reached at the end of string b. Then the only possibility that typed can become target is that we have all remaining a[i]'s equal to b[j-1] or b[b.length()-1].
+if (a[i] != b[j - 1]) return false otherwise we come out of loop and return true.
+
+Time Complexity
+Time-Complexity is :O(a.length()) which is linear .\mathcal{O}(n)O(n)
+
+Space Complexity
+Space-Complexity is :O(1) which is a constant space solution .\mathcal{O}(1)O(1)
+
+
+
+Code:
+
+bool solve(string a, string b) {
+    if (a.length() == b.length()) {
+        if (a.compare(b) == 0)
+            return true;
+        else
+            return false;
+    }
+    if (a.length() < b.length()) return false;
+    int i, j;
+    i = 1;
+    j = 1;
+    if (a[i - 1] != b[j - 1]) return false;
+    while (i < a.length() && j < b.length()) {
+        if (a[i] == b[j]) {
+            i++;
+            j++;
+            continue;
+        }
+        if (a[i] == b[j - 1])
+            i++;
+        else
+            return false;
+    }
+    if (i == a.length() && j != b.length()) return false;
+    while (i < a.length()) {
+        if (a[i] != b[j - 1]) return false;
+        i++;
+    }
+    return true;
+}
